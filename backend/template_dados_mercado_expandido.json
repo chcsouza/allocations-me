@@ -1,0 +1,150 @@
+{
+  "dataAtualizacao": "06/08/2026",
+  "selic": 14.00,
+  "cdi": 13.95,
+  "ipca_estimado": 5.00,
+  
+  "tesouro": {
+    "prefixado": [
+      { "ativo": "LTN 2026", "taxa": 14.50, "vencimento": "01/01/2026", "tipo": "Tesouro Pré-fixado" },
+      { "ativo": "LTN 2027", "taxa": 13.50, "vencimento": "01/01/2027", "tipo": "Tesouro Pré-fixado" },
+      { "ativo": "NTN-F 2029", "taxa": 12.75, "vencimento": "01/01/2029", "tipo": "Tesouro Pré-fixado" }
+    ],
+    "ipca": [
+      { "ativo": "NTN-B 2032", "taxa": "IPCA + 8.15%", "vencimento": "15/05/2032", "tipo": "Tesouro IPCA+" },
+      { "ativo": "NTN-B 2033", "taxa": "IPCA + 8.00%", "vencimento": "15/05/2033", "tipo": "Tesouro IPCA+" },
+      { "ativo": "NTN-B 2035", "taxa": "IPCA + 7.75%", "vencimento": "15/05/2035", "tipo": "Tesouro IPCA+" },
+      { "ativo": "NTN-B 2040", "taxa": "IPCA + 7.50%", "vencimento": "15/05/2040", "tipo": "Tesouro IPCA+" },
+      { "ativo": "NTN-B 2045", "taxa": "IPCA + 7.30%", "vencimento": "15/05/2045", "tipo": "Tesouro IPCA+" }
+    ],
+    "selic": [
+      { "ativo": "LFT (Tesouro SELIC)", "taxa": "100% SELIC", "tipo": "Pós-fixado SELIC" },
+      { "ativo": "LFT Hoje", "taxa": 14.25, "tipo": "Pós-fixado SELIC (taxa atual)" }
+    ]
+  },
+  
+  "cdb_prefixado": [
+    { "banco": "Banco A", "taxa": 14.50, "prazo": "2 anos", "liquidez": "Resgate apenas no vencimento", "ir": "IR progressivo" },
+    { "banco": "Banco B", "taxa": 14.00, "prazo": "3 anos", "liquidez": "Resgate apenas no vencimento", "ir": "IR progressivo" },
+    { "banco": "Banco C", "taxa": 13.75, "prazo": "5 anos", "liquidez": "Resgate apenas no vencimento", "ir": "IR progressivo" },
+    { "banco": "Banco D", "taxa": 14.25, "prazo": "1 ano", "liquidez": "Resgate apenas no vencimento", "ir": "IR progressivo" }
+  ],
+  
+  "cdb_posfixado": [
+    { "banco": "Banco A", "percentual_cdi": 100, "prazo": "Até 180 dias", "taxa_atual": 14.20, "ir": "IR progressivo" },
+    { "banco": "Banco B", "percentual_cdi": 103, "prazo": "2 anos", "taxa_atual": 14.63, "ir": "IR progressivo" },
+    { "banco": "Banco C", "percentual_cdi": 105, "prazo": "3 anos", "taxa_atual": 14.91, "ir": "IR progressivo" },
+    { "banco": "Banco D", "percentual_cdi": 110, "prazo": "5 anos", "taxa_atual": 15.62, "ir": "IR progressivo" },
+    { "banco": "Banco E", "percentual_cdi": 98, "prazo": "6 meses", "taxa_atual": 13.92, "ir": "IR progressivo" }
+  ],
+  
+  "lca_lci": [
+    { "banco": "Banco A", "percentual_cdi": 83, "prazo": "1 ano", "taxa_atual": 11.79, "isencao_ir": "Isento de IR", "liquidez": "Conforme contrato" },
+    { "banco": "Banco B", "percentual_cdi": 86, "prazo": "2 anos", "taxa_atual": 12.21, "isencao_ir": "Isento de IR", "liquidez": "Conforme contrato" },
+    { "banco": "Banco C", "percentual_cdi": 80, "prazo": "6 meses", "taxa_atual": 11.36, "isencao_ir": "Isento de IR", "liquidez": "Conforme contrato" },
+    { "banco": "Banco D", "percentual_cdi": 90, "prazo": "3 anos", "taxa_atual": 12.78, "isencao_ir": "Isento de IR", "liquidez": "Conforme contrato" }
+  ],
+  
+  "etfs_usd": {
+    "indice_amplo": {
+      "categoria": "Índice Amplo / S&P 500",
+      "descricao": "Diversificação nas 500 maiores empresas dos EUA",
+      "opcoes": [
+        { "ticker": "VOO", "nome": "Vanguard S&P 500 ETF", "gestor": "Vanguard", "taxa_admin": "0.03%", "patrimonio": "$400B+" },
+        { "ticker": "IVV", "nome": "iShares Core S&P 500 ETF", "gestor": "BlackRock", "taxa_admin": "0.03%", "patrimonio": "$350B+" },
+        { "ticker": "SPY", "nome": "SPDR S&P 500 ETF Trust", "gestor": "State Street", "taxa_admin": "0.09%", "patrimonio": "$450B+" }
+      ]
+    },
+    "mercado_total": {
+      "categoria": "Mercado Total EUA",
+      "descricao": "Todas as ações do mercado americano (large, mid e small cap)",
+      "opcoes": [
+        { "ticker": "VTI", "nome": "Vanguard Total Stock Market ETF", "gestor": "Vanguard", "taxa_admin": "0.03%", "patrimonio": "$300B+" },
+        { "ticker": "ITOT", "nome": "iShares Core S&P Total US Stock Market", "gestor": "BlackRock", "taxa_admin": "0.03%", "patrimonio": "$50B+" }
+      ]
+    },
+    "tecnologia": {
+      "categoria": "Tecnologia e Inovação",
+      "descricao": "Foco em empresas de tecnologia e crescimento",
+      "opcoes": [
+        { "ticker": "QQQ", "nome": "Invesco Nasdaq 100 ETF", "gestor": "Invesco", "taxa_admin": "0.20%", "patrimonio": "$200B+" },
+        { "ticker": "VGT", "nome": "Vanguard Information Technology ETF", "gestor": "Vanguard", "taxa_admin": "0.10%", "patrimonio": "$80B+" },
+        { "ticker": "XLK", "nome": "Technology Select Sector SPDR ETF", "gestor": "State Street", "taxa_admin": "0.13%", "patrimonio": "$90B+" },
+        { "ticker": "FTEC", "nome": "Fidelity MSCI Information Technology ETF", "gestor": "Fidelity", "taxa_admin": "0.08%", "patrimonio": "$20B+" }
+      ]
+    },
+    "dividendos": {
+      "categoria": "Renda e Dividendos",
+      "descricao": "Empresas com histórico de crescimento de dividendos",
+      "opcoes": [
+        { "ticker": "DGRO", "nome": "iShares Core Dividend Growth ETF", "gestor": "BlackRock", "taxa_admin": "0.08%", "patrimonio": "$70B+" },
+        { "ticker": "SCHD", "nome": "Schwab US Dividend Equity ETF", "gestor": "Schwab", "taxa_admin": "0.06%", "patrimonio": "$60B+" },
+        { "ticker": "VIG", "nome": "Vanguard Dividend Appreciation ETF", "gestor": "Vanguard", "taxa_admin": "0.06%", "patrimonio": "$80B+" },
+        { "ticker": "VYMI", "nome": "Vanguard International High Dividend ETF", "gestor": "Vanguard", "taxa_admin": "0.08%", "patrimonio": "$30B+" }
+      ]
+    },
+    "imoveis": {
+      "categoria": "Imóveis Comerciais (REITs)",
+      "descricao": "Diversificação em setor imobiliário",
+      "opcoes": [
+        { "ticker": "VNQ", "nome": "Vanguard Real Estate ETF", "gestor": "Vanguard", "taxa_admin": "0.12%", "patrimonio": "$100B+" },
+        { "ticker": "XLRE", "nome": "Real Estate Select Sector SPDR ETF", "gestor": "State Street", "taxa_admin": "0.13%", "patrimonio": "$50B+" },
+        { "ticker": "SCHH", "nome": "Schwab US Real Estate ETF", "gestor": "Schwab", "taxa_admin": "0.07%", "patrimonio": "$20B+" },
+        { "ticker": "REM", "nome": "iShares Mortgage Real Estate ETF", "gestor": "BlackRock", "taxa_admin": "0.48%", "patrimonio": "$5B" }
+      ]
+    },
+    "mercados_emergentes": {
+      "categoria": "Mercados Emergentes",
+      "descricao": "Diversificação em economias em desenvolvimento (China, Índia, Brasil, etc)",
+      "opcoes": [
+        { "ticker": "VWO", "nome": "Vanguard FTSE Emerging Markets ETF", "gestor": "Vanguard", "taxa_admin": "0.08%", "patrimonio": "$80B+" },
+        { "ticker": "IEMG", "nome": "iShares Core MSCI Emerging Markets ETF", "gestor": "BlackRock", "taxa_admin": "0.09%", "patrimonio": "$100B+" },
+        { "ticker": "SCHM", "nome": "Schwab Emerging Markets Equity ETF", "gestor": "Schwab", "taxa_admin": "0.11%", "patrimonio": "$10B" }
+      ]
+    },
+    "internacional": {
+      "categoria": "Mercados Desenvolvidos Internacionais",
+      "descricao": "Europa, Japão, Austrália e outros desenvolvidos",
+      "opcoes": [
+        { "ticker": "VEA", "nome": "Vanguard FTSE Developed Markets ETF", "gestor": "Vanguard", "taxa_admin": "0.05%", "patrimonio": "$120B+" },
+        { "ticker": "IEFA", "nome": "iShares Core MSCI EAFE ETF", "gestor": "BlackRock", "taxa_admin": "0.07%", "patrimonio": "$90B+" },
+        { "ticker": "SCHF", "nome": "Schwab International Equity ETF", "gestor": "Schwab", "taxa_admin": "0.06%", "patrimonio": "$20B+" }
+      ]
+    },
+    "saude": {
+      "categoria": "Saúde e Farmacêutico",
+      "descricao": "Empresas do setor de saúde, farmacêuticas e biotecnologia",
+      "opcoes": [
+        { "ticker": "VHT", "nome": "Vanguard Health Care ETF", "gestor": "Vanguard", "taxa_admin": "0.10%", "patrimonio": "$50B+" },
+        { "ticker": "XLV", "nome": "Health Care Select Sector SPDR ETF", "gestor": "State Street", "taxa_admin": "0.13%", "patrimonio": "$40B+" },
+        { "ticker": "IBB", "nome": "iShares NASDAQ Biotechnology ETF", "gestor": "BlackRock", "taxa_admin": "0.48%", "patrimonio": "$30B+" }
+      ]
+    },
+    "energia": {
+      "categoria": "Energia",
+      "descricao": "Petróleo, gás natural e energias renováveis",
+      "opcoes": [
+        { "ticker": "XLE", "nome": "Energy Select Sector SPDR ETF", "gestor": "State Street", "taxa_admin": "0.13%", "patrimonio": "$30B+" },
+        { "ticker": "VDE", "nome": "Vanguard Energy ETF", "gestor": "Vanguard", "taxa_admin": "0.10%", "patrimonio": "$20B+" },
+        { "ticker": "ICLN", "nome": "iShares Global Clean Energy ETF", "gestor": "BlackRock", "taxa_admin": "0.41%", "patrimonio": "$15B" }
+      ]
+    }
+  },
+  
+  "bitcoin": [
+    { "ticker": "IBIT", "nome": "iShares Bitcoin ETF", "gestor": "BlackRock", "taxa_admin": "0.25%", "tipo": "Spot Bitcoin" },
+    { "ticker": "FBTC", "nome": "Fidelity Wise Origin Bitcoin ETF", "gestor": "Fidelity", "taxa_admin": "0.19%", "tipo": "Spot Bitcoin" },
+    { "ticker": "BTC", "nome": "ProShares Bitcoin ETF", "gestor": "ProShares", "taxa_admin": "0.25%", "tipo": "Spot Bitcoin" }
+  ],
+  
+  "ethereum": [
+    { "ticker": "ETHE", "nome": "iShares Ethereum ETF", "gestor": "BlackRock", "taxa_admin": "0.25%", "tipo": "Spot Ethereum" },
+    { "ticker": "FETH", "nome": "Fidelity Wise Origin Ethereum ETF", "gestor": "Fidelity", "taxa_admin": "0.19%", "tipo": "Spot Ethereum" }
+  ],
+  
+  "ouro": [
+    { "ticker": "GLD", "nome": "SPDR Gold Shares", "gestor": "State Street", "taxa_admin": "0.40%", "commodity": "Ouro físico" },
+    { "ticker": "IAU", "nome": "iShares Gold Trust", "gestor": "BlackRock", "taxa_admin": "0.25%", "commodity": "Ouro físico" },
+    { "ticker": "AGZD", "nome": "Xtrackers Silver ETF", "gestor": "Deutsche Boerse", "taxa_admin": "0.19%", "commodity": "Prata física" }
+  ]
+}

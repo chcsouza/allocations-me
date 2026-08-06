@@ -1,0 +1,9 @@
+{
+  "name": "allocations-me-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Frontend estático'",
+    "start": "echo 'Abra allocations_me.html'"
+  }
+}

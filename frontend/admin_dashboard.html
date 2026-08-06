@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - allocations.me</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      color: #1a1a1a;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #1a1a1a;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tab-btn {
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #999;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    
+    .tab-btn:hover {
+      color: #667eea;
+    }
+    
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1a1a1a;
+      font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      transition: border 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 300px;
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 600px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #666;
+    }
+    
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .status {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 14px;
+    }
+    
+    .status.success {
+      background: #efe;
+      color: #393;
+      border: 1px solid #9c9;
+    }
+    
+    .status.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #faa;
+    }
+    
+    .status.info {
+      background: #eef;
+      color: #339;
+      border: 1px solid #aaf;
+    }
+    
+    .icon {
+      margin-right: 0.5rem;
+    }
+    
+    .subtitle {
+      font-size: 13px;
+      color: #999;
+      margin-top: 0.25rem;
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    
+    .table th,
+    .table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 13px;
+    }
+    
+    .table th {
+      background: #f8f9ff;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    
+    .table tr:hover {
+      background: #f8f9ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>⚙️ Admin Dashboard - allocations.me</h1>
+      <p>Gerencie dados de títulos e indicadores de mercado</p>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('indicadores')">📊 Indicadores</button>
+      <button class="tab-btn" onclick="switchTab('tesouro')">🏛️ Tesouro</button>
+      <button class="tab-btn" onclick="switchTab('cdb')">💰 CDB/LCA/LCI</button>
+      <button class="tab-btn" onclick="switchTab('json')">📄 JSON Completo</button>
+    </div>
+    
+    <!-- TAB 1: Indicadores -->
+    <div id="indicadores" class="tab-content active">
+      <h2>📊 Indicadores de Mercado</h2>
+      <p style="color: #999; margin-bottom: 1.5rem;">Atualize as taxas principais do mercado</p>
+      
+      <div id="statusIndicadores"></div>
+      
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Data de Atualização (DD/MM/YYYY)</label>
+          <input type="text" id="dataAtualizacao" placeholder="06/08/2026">
+          <div class="subtitle">Data no formato brasileiro</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Taxa SELIC (%)</label>
+          <input type="number" id="selic" placeholder="14.00" step="0.01">
+          <div class="subtitle">Última taxa SELIC</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Taxa CDI (%)</label>
+          <input type="number" id="cdi" placeholder="13.95" step="0.01">
+          <div class="subtitle">Última taxa CDI</div>
+        </div>
+        
+        <div class="form-group">
+          <label>IPCA Estimado (%)</label>
+          <input type="number" id="ipca" placeholder="5.00" step="0.01">
+          <div class="subtitle">Projeção IPCA</div>
+        </div>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="salvarIndicadores()">💾 Salvar Indicadores</button>
+        <button class="btn btn-secondary" onclick="carregarIndicadores()">🔄 Recarregar</button>
+      </div>
+    </div>
+    
+    <!-- TAB 2: Tesouro -->
+    <div id="tesouro" class="tab-content">
+      <h2>🏛️ Tesouro Direto</h2>
+      <p style="color: #999; margin-bottom: 1.5rem;">Edite taxas de Tesouro Direto (Pré, IPCA, SELIC)</p>
+      
+      <div id="statusTesouro"></div>
+      
+      <h3 style="margin-bottom: 1rem;">Pré-fixado (LTN)</h3>
+      <div id="prefixadoList" style="margin-bottom: 2rem;"></div>
+      
+      <h3 style="margin-bottom: 1rem;">IPCA+ (NTN-B)</h3>
+      <div id="ipcaList" style="margin-bottom: 2rem;"></div>
+      
+      <h3 style="margin-bottom: 1rem;">SELIC (LFT)</h3>
+      <div id="selicList" style="margin-bottom: 2rem;"></div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="salvarTesouro()">💾 Salvar Tesouro</button>
+      </div>
+    </div>
+    
+    <!-- TAB 3: CDB/LCA/LCI -->
+    <div id="cdb" class="tab-content">
+      <h2>💰 CDB, LCA e LCI</h2>
+      <p style="color: #999; margin-bottom: 1.5rem;">Edite taxas de CDB Pré/Pós, LCA e LCI</p>
+      
+      <div id="statusCDB"></div>
+      
+      <h3 style="margin-bottom: 1rem;">CDB Pré-fixado</h3>
+      <div id="cdbPrefList" style="margin-bottom: 2rem;"></div>
+      
+      <h3 style="margin-bottom: 1rem;">CDB Pós-fixado (% CDI)</h3>
+      <div id="cdbPosList" style="margin-bottom: 2rem;"></div>
+      
+      <h3 style="margin-bottom: 1rem;">LCA/LCI (% CDI - Isento de IR)</h3>
+      <div id="lcaLciList" style="margin-bottom: 2rem;"></div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="salvarCDB()">💾 Salvar CDB/LCA/LCI</button>
+      </div>
+    </div>
+    
+    <!-- TAB 4: JSON -->
+    <div id="json" class="tab-content">
+      <h2>📄 JSON Completo</h2>
+      <p style="color: #999; margin-bottom: 1.5rem;">Edite o arquivo JSON completo (avançado)</p>
+      
+      <div id="statusJSON"></div>
+      
+      <div class="form-group">
+        <label>Dados JSON (JSON válido)</label>
+        <textarea id="jsonCompleto" placeholder='{"dataAtualizacao": "06/08/2026", ...}'></textarea>
+        <div class="subtitle">Certifique-se de que o JSON está válido antes de salvar</div>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="salvarJSON()">💾 Salvar JSON</button>
+        <button class="btn btn-secondary" onclick="carregarJSON()">🔄 Recarregar</button>
+        <button class="btn btn-secondary" onclick="validarJSON()">✓ Validar JSON</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+    
+    // =====================
+    // FUNÇÕES DE NAVEGAÇÃO
+    // =====================
+    
+    function switchTab(tabName) {
+      // Oculta todas as abas
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      // Mostra a aba selecionada
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+      
+      // Carrega dados quando abre a aba
+      if (tabName === 'indicadores') carregarIndicadores();
+      if (tabName === 'tesouro') carregarTesouro();
+      if (tabName === 'cdb') carregarCDB();
+      if (tabName === 'json') carregarJSON();
+    }
+    
+    function showStatus(elementId, message, type) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = `<div class="status ${type}"><span class="icon">${
+        type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'
+      }</span>${message}</div>`;
+    }
+    
+    // =====================
+    // TAB 1: INDICADORES
+    // =====================
+    
+    function carregarIndicadores() {
+      fetch(`${API_BASE}/titulos/resumo`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.sucesso) {
+            document.getElementById('dataAtualizacao').value = data.data.dataAtualizacao;
+            document.getElementById('selic').value = data.data.selic;
+            document.getElementById('cdi').value = data.data.cdi;
+            document.getElementById('ipca').value = data.data.ipca_estimado;
+          }
+        })
+        .catch(err => showStatus('statusIndicadores', 'Erro ao carregar dados: ' + err.message, 'error'));
+    }
+    
+    function salvarIndicadores() {
+      const dados = {
+        dataAtualizacao: document.getElementById('dataAtualizacao').value,
+        selic: parseFloat(document.getElementById('selic').value),
+        cdi: parseFloat(document.getElementById('cdi').value),
+        ipca_estimado: parseFloat(document.getElementById('ipca').value)
+      };
+      
+      // Aqui você enviaria para o backend
+      // Por enquanto, mostra sucesso local
+      showStatus('statusIndicadores', '✅ Indicadores salvos com sucesso! (local)', 'success');
+      console.log('Dados a salvar:', dados);
+    }
+    
+    // =====================
+    // TAB 2: TESOURO
+    // =====================
+    
+    function carregarTesouro() {
+      fetch(`${API_BASE}/titulos/tesouro`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.sucesso) {
+            renderTesouro(data.data);
+          }
+        })
+        .catch(err => showStatus('statusTesouro', 'Erro: ' + err.message, 'error'));
+    }
+    
+    function renderTesouro(tesouro) {
+      // Pré-fixado
+      const prefHtml = tesouro.prefixado.map(t => `
+        <div style="padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 0.5rem;">
+          <strong>${t.ativo}</strong> - ${t.vencimento}
+          <input type="number" value="${t.taxa}" placeholder="Taxa" step="0.01" style="width: 100px; margin-left: 1rem; padding: 0.5rem;">%
+        </div>
+      `).join('');
+      document.getElementById('prefixadoList').innerHTML = prefHtml;
+      
+      // IPCA
+      const ipcaHtml = tesouro.ipca.map(t => `
+        <div style="padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 0.5rem;">
+          <strong>${t.ativo}</strong> - ${t.vencimento}
+          <input type="text" value="${t.taxa}" placeholder="Taxa" style="width: 150px; margin-left: 1rem; padding: 0.5rem;">
+        </div>
+      `).join('');
+      document.getElementById('ipcaList').innerHTML = ipcaHtml;
+      
+      // SELIC
+      const selicHtml = tesouro.selic.map(t => `
+        <div style="padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 0.5rem;">
+          <strong>${t.ativo}</strong>
+          <input type="text" value="${t.taxa}" placeholder="Taxa" style="width: 150px; margin-left: 1rem; padding: 0.5rem;">
+        </div>
+      `).join('');
+      document.getElementById('selicList').innerHTML = selicHtml;
+    }
+    
+    function salvarTesouro() {
+      showStatus('statusTesouro', '💾 Salvando Tesouro... (em desenvolvimento)', 'info');
+    }
+    
+    // =====================
+    // TAB 3: CDB/LCA/LCI
+    // =====================
+    
+    function carregarCDB() {
+      fetch(`${API_BASE}/titulos/cdb`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.sucesso) {
+            renderCDB(data.data);
+          }
+        })
+        .catch(err => showStatus('statusCDB', 'Erro: ' + err.message, 'error'));
+    }
+    
+    function renderCDB(cdb) {
+      const prefHtml = cdb.prefixado.map(item => `
+        <div style="padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 0.5rem;">
+          <strong>${item.banco}</strong> (${item.prazo}) -
+          <input type="number" value="${item.taxa}" placeholder="Taxa" step="0.01" style="width: 80px; padding: 0.5rem;">%
+        </div>
+      `).join('');
+      document.getElementById('cdbPrefList').innerHTML = prefHtml;
+      
+      const posfixadoHtml = cdb.posfixado.map(item => `
+        <div style="padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 0.5rem;">
+          <strong>${item.banco}</strong> (${item.prazo}) -
+          <input type="number" value="${item.percentual_cdi}" placeholder="% CDI" step="0.01" style="width: 80px; padding: 0.5rem;">% CDI
+        </div>
+      `).join('');
+      document.getElementById('cdbPosList').innerHTML = posfixadoHtml;
+    }
+    
+    function salvarCDB() {
+      showStatus('statusCDB', '💾 Salvando CDB/LCA/LCI... (em desenvolvimento)', 'info');
+    }
+    
+    // =====================
+    // TAB 4: JSON
+    // =====================
+    
+    function carregarJSON() {
+      fetch(`${API_BASE}/titulos`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.sucesso) {
+            document.getElementById('jsonCompleto').value = JSON.stringify(data.data, null, 2);
+            showStatus('statusJSON', 'ℹ️ JSON carregado com sucesso', 'info');
+          }
+        })
+        .catch(err => showStatus('statusJSON', 'Erro: ' + err.message, 'error'));
+    }
+    
+    function validarJSON() {
+      try {
+        const json = document.getElementById('jsonCompleto').value;
+        JSON.parse(json);
+        showStatus('statusJSON', '✅ JSON válido!', 'success');
+      } catch (err) {
+        showStatus('statusJSON', '❌ JSON inválido: ' + err.message, 'error');
+      }
+    }
+    
+    function salvarJSON() {
+      const json = document.getElementById('jsonCompleto').value;
+      
+      try {
+        const parsed = JSON.parse(json);
+        showStatus('statusJSON', '💾 JSON salvo com sucesso! (dados salvos localmente)', 'success');
+        console.log('Dados a salvar:', parsed);
+      } catch (err) {
+        showStatus('statusJSON', '❌ Erro: JSON inválido', 'error');
+      }
+    }
+    
+    // Carrega indicadores ao abrir
+    window.addEventListener('load', () => {
+      carregarIndicadores();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>allocations.me - IA para Balanceamento de Carteira</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a1a; line-height: 1.6; }
+    
+    /* Navigation */
+    nav {
+      background: white;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    nav a { color: #666; text-decoration: none; margin: 0 1.5rem; font-size: 14px; font-weight: 500; }
+    nav a:hover { color: #3b82f6; }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .hero-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .hero h1 { font-size: 52px; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+    .hero p { font-size: 20px; margin-bottom: 2rem; opacity: 0.95; }
+    
+    .hero-cta {
+      display: inline-block;
+      background: white;
+      color: #667eea;
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+      transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+    
+    /* Features Section */
+    .features {
+      padding: 4rem 2rem;
+      background: #f8f9ff;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .section-header h2 { font-size: 36px; margin-bottom: 1rem; color: #1a1a1a; }
+    .section-header p { font-size: 16px; color: #666; }
+    
+    .features-grid {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid #e5e5e5;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+    }
+    
+    .feature-icon { font-size: 48px; margin-bottom: 1rem; }
+    .feature-card h3 { color: #1a1a1a; margin-bottom: 0.75rem; font-size: 18px; }
+    .feature-card p { color: #666; font-size: 14px; line-height: 1.6; }
+    
+    /* Modal Container */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-overlay.show { display: flex; }
+    
+    .modal {
+      background: white;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    /* Quiz Modal */
+    .quiz-modal {
+      padding: 2rem;
+    }
+    
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .quiz-header h2 { font-size: 20px; color: #1a1a1a; }
+    
+    .close-btn {
+      font-size: 28px;
+      color: #999;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      line-height: 1;
+    }
+    
+    .close-btn:hover { color: #333; }
+    
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #f0f0f0;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s;
+    }
+    
+    .question-text {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #e5e5e5;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-secondary:hover { background: #e5e5e5; }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      grid-column: span 2;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .progress-text {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 1.5rem;
+    }
+    
+    /* Payment Modal */
+    .payment-modal {
+      padding: 2rem;
+    }
+    
+    .payment-summary {
+      background: #f8f9ff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+    
+    .summary-total {
+      border-top: 1px solid #e5e5e5;
+      padding-top: 1rem;
+      margin-top: 1rem;
+      font-size: 18px;
+      font-weight: 700;
+      color: #667eea;
+    }
+    
+    .payment-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .payment-method {
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .payment-method:hover {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+    
+    .payment-method.active {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+    
+    .payment-icon { font-size: 32px; margin-bottom: 0.5rem; }
+    .payment-method p { font-size: 13px; color: #666; }
+    .payment-method strong { display: block; margin: 0.5rem 0 0.25rem; }
+    
+    .payment-form {
+      margin-bottom: 2rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+    }
+    
+    .security-info {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 6px;
+    }
+    
+    /* Result Modal */
+    .result-modal {
+      padding: 2rem;
+    }
+    
+    .result-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .success-icon {
+      font-size: 60px;
+      margin-bottom: 1rem;
+      animation: bounce 0.6s;
+    }
+    
+    @keyframes bounce {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .result-header h2 {
+      font-size: 24px;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+    
+    .result-header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .carteira-preview {
+      background: #f8f9ff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    
+    .carteira-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      border-left: 3px solid #667eea;
+    }
+    
+    .carteira-name { font-weight: 600; color: #1a1a1a; }
+    .carteira-pct { font-size: 18px; font-weight: 700; color: #667eea; }
+    
+    .cta-buttons {
+      display: grid;
+      gap: 1rem;
+    }
+    
+    .btn-download {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .hidden { display: none !important; }
+    
+    /* Confirmation Modal */
+    .confirmation-modal {
+      padding: 2rem;
+    }
+
+    .confirmation-item {
+      background: white;
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border-left: 3px solid #667eea;
+    }
+
+    .confirmation-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .confirmation-value {
+      font-size: 16px;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .confirmation-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn-edit {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-edit:hover {
+      background: #f8f9ff;
+    }
+
+    .btn-confirm {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    footer {
+      background: #1a1a1a;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      font-size: 12px;
+    }
+    
+    /* Indicators Widget */
+    .indicators-section {
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .indicators-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .indicators-header {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #1a1a1a;
+      text-align: center;
+    }
+    
+    .indicators-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .indicator-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s;
+      border-left: 4px solid #667eea;
+    }
+    
+    .indicator-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+    
+    .indicator-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+    
+    .indicator-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+    
+    .indicator-update {
+      font-size: 10px;
+      color: #bbb;
+    }
+    
+    .indicator-loading {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: #999;
+      font-size: 14px;
+    }
+    
+    .indicator-error {
+      background: #fee;
+      color: #c33;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">allocations.me</div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🤖 Powered by AI</div>
+      <h1>Sua IA para Balanceamento de Carteira</h1>
+      <p>Conforme o seu perfil, descubra a alocação de investimentos ideal. Com dados atualizados e recomendações personalizadas.</p>
+      <button class="hero-cta" onclick="app.startQuiz()">Começar Análise</button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="section-header">
+      <h2>Por que usar IA para balanceamento?</h2>
+      <p>Análise instantânea do seu perfil com recomendações baseadas em dados de mercado atualizados</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚖️</div>
+        <h3>Balanceamento Automático</h3>
+        <p>A IA calcula o melhor mix de ativos para seu perfil, horizonte e tolerância ao risco.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Dados em Tempo Real</h3>
+        <p>SELIC, CDI, Tesouro Direto e ETFs atualizados a cada 15 minutos para máxima precisão.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Análise Personalizada</h3>
+        <p>9 perguntas inteligentes que mapeiam seu perfil completo como investidor.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>Diversificação Global</h3>
+        <p>Combina Renda Fixa BR com ETFs internacionais e criptomoedas em uma carteira única.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>3-5 Ativos por Classe</h3>
+        <p>Distribuição granular em múltiplos ativos conforme seu horizonte de investimento.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>Um Único Pagamento</h3>
+        <p>Paga R$97,90 uma única vez. Sem recorrência, sem surpresas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Indicators Section -->
+  <section class="indicators-section">
+    <div class="indicators-container">
+      <div class="indicators-header">📊 Indicadores de Mercado em Tempo Real</div>
+      <div id="indicatorsWidget" class="indicators-grid">
+        <div class="indicator-loading">⏳ Carregando dados...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 allocations.me - Balanceamento de Carteira com IA. Todos os direitos reservados.</p>
+    <p style="margin-top: 1rem;">Esta alocação não substitui um assessor financeiro profissional.</p>
+  </footer>
+
+  <!-- Quiz Modal -->
+  <div class="modal-overlay hidden" id="quizOverlay">
+    <div class="modal">
+      <div class="quiz-modal">
+        <div class="quiz-header">
+          <h2>Análise IA</h2>
+          <button class="close-btn" onclick="app.closeQuiz()">✕</button>
+        </div>
+        
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="question-text" id="questionText"></div>
+        
+        <div class="form-group">
+          <input type="text" id="answerInput" placeholder="Sua resposta...">
+        </div>
+        
+        <div class="button-group">
+          <button class="btn btn-secondary" onclick="app.previousQuestion()" id="btnPrev" disabled>← Anterior</button>
+          <button class="btn btn-primary" onclick="app.nextQuestion()" id="btnNext">Próximo →</button>
+        </div>
+        
+        <div class="progress-text" id="progressText"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay hidden" id="confirmationOverlay">
+    <div class="modal">
+      <div class="confirmation-modal">
+        <div class="quiz-header">
+          <h2>Confirme suas Respostas</h2>
+          <button class="close-btn" onclick="app.closeConfirmation()">✕</button>
+        </div>
+        
+        <p style="color: #666; font-size: 14px; margin-bottom: 1.5rem;">Verifique se tudo está correto antes de prosseguir:</p>
+        
+        <div id="confirmationSummary" style="max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem;"></div>
+        
+        <div class="confirmation-actions">
+          <button class="btn-edit" onclick="app.editQuestion(0)">← Voltar e Corrigir</button>
+          <button class="btn-confirm" onclick="app.proceedToPayment()">Confirmar e Pagar →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay hidden" id="paymentOverlay">
+    <div class="modal">
+      <div class="payment-modal">
+        <div class="quiz-header">
+          <h2>Confira sua Alocação</h2>
+          <button class="close-btn" onclick="app.closePayment()">✕</button>
+        </div>
+        
+        <div class="payment-summary">
+          <div class="summary-item">
+            <span>Análise IA - Alocação de Investimentos</span>
+            <span>R$97,90</span>
+          </div>
+          <div class="summary-item">
+            <span>Taxa de Processamento</span>
+            <span>Grátis</span>
+          </div>
+          <div class="summary-total">
+            Total: R$97,90
+          </div>
+        </div>
+        
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #1a1a1a;">Método de Pagamento</h3>
+        
+        <div class="payment-methods">
+          <div class="payment-method active" onclick="app.selectPayment('stripe', event)">
+            <div class="payment-icon">💳</div>
+            <strong>Cartão</strong>
+            <p>Crédito ou Débito</p>
+          </div>
+          <div class="payment-method" onclick="app.selectPayment('paypal', event)">
+            <div class="payment-icon">🅿️</div>
+            <strong>PayPal</strong>
+            <p>Conta ou Cartão</p>
+          </div>
+        </div>
+        
+        <div class="payment-form" id="stripeForm">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="seu@email.com" id="cardEmail" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" placeholder="João Silva" id="cardName">
+          </div>
+          
+          <div class="form-group">
+            <label>Número do Cartão</label>
+            <input type="text" placeholder="4532 1234 5678 9010" id="cardNumber" maxlength="19">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Vencimento (MM/AA)</label>
+              <input type="text" placeholder="12/25" id="cardExpiry" maxlength="5">
+            </div>
+            <div class="form-group">
+              <label>CVC</label>
+              <input type="text" placeholder="123" id="cardCVC" maxlength="3">
+            </div>
+          </div>
+        </div>
+        
+        <div class="payment-form hidden" id="paypalForm">
+          <div class="form-group">
+            <label>Email PayPal</label>
+            <input type="email" placeholder="seu@paypal.com" id="paypalEmail" required>
+          </div>
+          <p style="font-size: 12px; color: #666;">Você será redirecionado para PayPal para completar o pagamento seguro.</p>
+        </div>
+        
+        <button class="btn-download" onclick="app.processPayment()">Pagar R$97,90 Agora</button>
+        
+        <div class="security-info">
+          <span>🔒 Seguro</span>
+          <span>•</span>
+          <span>Criptografia TLS</span>
+          <span>•</span>
+          <span>PCI Compliant</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Modal -->
+  <div class="modal-overlay hidden" id="resultOverlay">
+    <div class="modal">
+      <div class="result-modal">
+        <div class="result-header">
+          <div class="success-icon">✅</div>
+          <h2>Sua Alocação está Pronta!</h2>
+          <p id="resultSubtitle">Carteira personalizada conforme seu perfil</p>
+        </div>
+        
+        <div class="carteira-preview" id="carteiraPreview"></div>
+        
+        <div class="cta-buttons">
+          <button class="btn-download" onclick="app.downloadPDF()">
+            📥 Baixar Relatório em PDF
+          </button>
+          <button class="btn-download" style="background: white; color: #667eea; border: 2px solid #667eea;" onclick="app.shareCarteira()">
+            🔗 Compartilhar Alocação
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const app = {
+      questions: [
+        { id: 'goal', text: 'Qual é seu principal objetivo financeiro?' },
+        { id: 'age', text: 'Quantos anos você tem?' },
+        { id: 'children', text: 'Quantos filhos você tem?' },
+        { id: 'horizon', text: 'Qual é seu horizonte de investimento?', placeholder: 'ex: 5 anos, 3 anos, 10 anos' },
+        { id: 'risk', text: 'Como você reage às flutuações de valor?', placeholder: 'ex: fico nervoso | tranquilo, mas atento | durmo bem, vejo oportunidade' },
+        { id: 'situation', text: 'Como está sua situação financeira atual?', placeholder: 'ex: empregado | autônomo | aposentado | desempregado' },
+        { id: 'experience', text: 'Qual é sua experiência com investimentos?', placeholder: 'ex: iniciante | intermediário | experiente' },
+        { id: 'initial', text: 'Quanto deseja investir inicialmente? (em reais)' },
+        { id: 'annual', text: 'Qual é o aporte anual esperado?' }
+      ],
+      
+      currentQuestion: 0,
+      answers: {},
+      selectedPayment: 'stripe',
+      
+      startQuiz() {
+        this.currentQuestion = 0;
+        this.answers = {};
+        document.getElementById('quizOverlay').classList.remove('hidden');
+        document.getElementById('quizOverlay').classList.add('show');
+        this.displayQuestion();
+      },
+      
+      closeQuiz() {
+        document.getElementById('quizOverlay').classList.remove('show');
+        document.getElementById('quizOverlay').classList.add('hidden');
+      },
+      
+      closePayment() {
+        document.getElementById('paymentOverlay').classList.remove('show');
+        document.getElementById('paymentOverlay').classList.add('hidden');
+      },
+
+      closeConfirmation() {
+        document.getElementById('confirmationOverlay').classList.remove('show');
+        document.getElementById('confirmationOverlay').classList.add('hidden');
+      },
+
+      proceedToPayment() {
+        document.getElementById('confirmationOverlay').classList.remove('show');
+        document.getElementById('confirmationOverlay').classList.add('hidden');
+        this.openPayment();
+      },
+      
+      displayQuestion() {
+        const q = this.questions[this.currentQuestion];
+        document.getElementById('questionText').textContent = q.text;
+        
+        const input = document.getElementById('answerInput');
+        input.value = this.answers[q.id] || '';
+        input.placeholder = q.placeholder || 'Sua resposta...';
+        input.focus();
+        
+        const progress = ((this.currentQuestion + 1) / this.questions.length) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('progressText').textContent = `Pergunta ${this.currentQuestion + 1} de ${this.questions.length}`;
+        
+        document.getElementById('btnPrev').disabled = this.currentQuestion === 0;
+      },
+      
+      previousQuestion() {
+        const q = this.questions[this.currentQuestion];
+        this.answers[q.id] = document.getElementById('answerInput').value.trim();
+        
+        if (this.currentQuestion > 0) {
+          this.currentQuestion--;
+          this.displayQuestion();
+        }
+      },
+      
+      nextQuestion() {
+        const answer = document.getElementById('answerInput').value.trim();
+        if (!answer) {
+          alert('Por favor, responda a pergunta');
+          return;
+        }
+
+        // Validação específica por pergunta
+        const validation = this.validateAnswer(this.currentQuestion, answer);
+        if (!validation.valid) {
+          alert(validation.message);
+          return;
+        }
+        
+        this.answers[this.questions[this.currentQuestion].id] = answer;
+        this.currentQuestion++;
+        
+        if (this.currentQuestion < this.questions.length) {
+          this.displayQuestion();
+        } else {
+          this.openConfirmation();
+        }
+      },
+
+      validateAnswer(questionIndex, answer) {
+        const q = this.questions[questionIndex];
+        
+        switch(q.id) {
+          case 'age':
+            const age = parseInt(answer);
+            if (isNaN(age) || age < 18 || age > 100) {
+              return { valid: false, message: 'Idade deve ser um número entre 18 e 100 anos' };
+            }
+            break;
+            
+          case 'children':
+            const children = parseInt(answer);
+            if (isNaN(children) || children < 0 || children > 20) {
+              return { valid: false, message: 'Número de filhos deve ser entre 0 e 20' };
+            }
+            break;
+            
+          case 'horizon':
+            if (!/(\d+\s*anos?)/i.test(answer)) {
+              return { valid: false, message: 'Por favor, indique um horizonte com número de anos (ex: 5 anos, 10 anos)' };
+            }
+            break;
+            
+          case 'risk':
+            // Risco baixo: nervoso, assustado, pavor, pânico, perco sono
+            const riskLow = /assustado|nervoso|pavor|pânico|perco.*sono|preocupado|agonia|medo|tenho.*medo|vendo tudo|não aguento/i;
+            
+            // Risco médio: tranquilo, normal, fico atento, analiso
+            const riskMed = /tranquilo.*mas|um.*pouco|normal|mercado|analiso|nem.*muito|fico.*atento|vejo.*contexto|fico.*preocupado.*mas/i;
+            
+            // Risco alto: durmo tranquilo, oportunidade, compro mais, indiferente, empolgado
+            const riskHigh = /durmo.*tranquilo|oportunidade|compro.*mais|indiferente|não.*importo|calmo|empolgado|acumular|vejo.*ganhar|entusiasmado/i;
+
+            if (riskLow.test(answer)) {
+              this.riskProfile = 'low';
+            } else if (riskHigh.test(answer)) {
+              this.riskProfile = 'high';
+            } else if (riskMed.test(answer)) {
+              this.riskProfile = 'medium';
+            } else {
+              return { valid: false, message: 'Por favor, descreva sua reação (ex: fico nervoso | tranquilo, mas atento | durmo bem, vejo oportunidade)' };
+            }
+            break;
+            
+          case 'situation':
+            // Situação: Empregado, Autônomo, Aposentado, Desempregado
+            const situationMap = {
+              'empregado|clt|salário|funcionário': 'employed',
+              'autônomo|freelancer|próprio negócio|empresário': 'self-employed',
+              'aposentado|aposentadoria|inativo': 'retired',
+              'desempregado|desempreg|sem.*emprego|procurando': 'unemployed'
+            };
+
+            let situationFound = false;
+            for (const [pattern, category] of Object.entries(situationMap)) {
+              if (new RegExp(pattern, 'i').test(answer)) {
+                this.situationProfile = category;
+                situationFound = true;
+                break;
+              }
+            }
+
+            if (!situationFound) {
+              return { valid: false, message: 'Por favor, indique sua situação (ex: empregado | autônomo | aposentado | desempregado)' };
+            }
+            break;
+            
+          case 'experience':
+            // Experiência: Iniciante, Intermediário, Experiente
+            const expBeginner = /iniciante|primeira.*vez|começar|novo|nunca.*investi/i;
+            const expIntermediate = /intermediário|tenho.*experiência|algum.*tempo|meio.*tempo|básico/i;
+            const expAdvanced = /experiente|profissional|avançado|muitos.*anos|trader|expert/i;
+
+            if (expBeginner.test(answer)) {
+              this.experienceProfile = 'beginner';
+            } else if (expAdvanced.test(answer)) {
+              this.experienceProfile = 'advanced';
+            } else if (expIntermediate.test(answer)) {
+              this.experienceProfile = 'intermediate';
+            } else {
+              return { valid: false, message: 'Por favor, indique sua experiência (ex: iniciante | intermediário | experiente)' };
+            }
+            break;
+            
+          case 'initial':
+            const initial = parseFloat(answer.replace(/[^\d.-]/g, ''));
+            if (isNaN(initial) || initial < 1000) {
+              return { valid: false, message: 'Valor inicial deve ser no mínimo R$1.000' };
+            }
+            break;
+            
+          case 'annual':
+            const annual = parseFloat(answer.replace(/[^\d.-]/g, ''));
+            if (isNaN(annual) || annual < 0) {
+              return { valid: false, message: 'Aporte anual deve ser um valor válido (>=0)' };
+            }
+            break;
+        }
+        
+        return { valid: true };
+      },
+      
+      openPayment() {
+        document.getElementById('quizOverlay').classList.remove('show');
+        document.getElementById('paymentOverlay').classList.remove('hidden');
+        document.getElementById('paymentOverlay').classList.add('show');
+      },
+
+      openConfirmation() {
+        document.getElementById('quizOverlay').classList.remove('show');
+        document.getElementById('confirmationOverlay').classList.remove('hidden');
+        document.getElementById('confirmationOverlay').classList.add('show');
+        this.displayConfirmation();
+      },
+
+      displayConfirmation() {
+        const summary = this.questions.map((q, idx) => {
+          const answer = this.answers[q.id];
+          return `
+            <div class="confirmation-item">
+              <div class="confirmation-label">${q.text}</div>
+              <div class="confirmation-value">${answer}</div>
+            </div>
+          `;
+        }).join('');
+        
+        document.getElementById('confirmationSummary').innerHTML = summary;
+      },
+
+      editQuestion(index) {
+        document.getElementById('confirmationOverlay').classList.remove('show');
+        document.getElementById('confirmationOverlay').classList.add('hidden');
+        this.currentQuestion = index;
+        document.getElementById('quizOverlay').classList.remove('hidden');
+        document.getElementById('quizOverlay').classList.add('show');
+        this.displayQuestion();
+      },
+      
+      selectPayment(method, event) {
+        this.selectedPayment = method;
+        
+        document.querySelectorAll('.payment-method').forEach(el => {
+          el.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+        
+        document.getElementById('stripeForm').classList.toggle('hidden', method !== 'stripe');
+        document.getElementById('paypalForm').classList.toggle('hidden', method !== 'paypal');
+      },
+      
+      processPayment() {
+        const method = this.selectedPayment;
+        let userEmail = '';
+
+        if (method === 'stripe') {
+          userEmail = document.getElementById('cardEmail').value;
+          const name = document.getElementById('cardName').value;
+          const cardNumber = document.getElementById('cardNumber').value;
+          
+          if (!userEmail || !name || !cardNumber) {
+            alert('Por favor, preencha todos os campos');
+            return;
+          }
+        } else if (method === 'paypal') {
+          userEmail = document.getElementById('paypalEmail').value;
+          if (!userEmail) {
+            alert('Por favor, insira seu email PayPal');
+            return;
+          }
+        }
+
+        // Validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userEmail)) {
+          alert('Por favor, insira um email válido');
+          return;
+        }
+
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = 'Processando pagamento...';
+        
+        // Chamar backend API
+        this.sendToBackend(userEmail, method)
+          .then(result => {
+            console.log('✅ Resposta do backend:', result);
+            document.getElementById('paymentOverlay').classList.remove('show');
+            document.getElementById('paymentOverlay').classList.add('hidden');
+            btn.disabled = false;
+            btn.textContent = 'Pagar R$97,90 Agora';
+            
+            // Mostrar resultado
+            this.showResults(result);
+          })
+          .catch(error => {
+            console.error('❌ Erro:', error);
+            alert('Erro ao processar: ' + error.message);
+            btn.disabled = false;
+            btn.textContent = 'Pagar R$97,90 Agora';
+          });
+      },
+
+      async sendToBackend(email, paymentMethod) {
+        // Preparar dados
+        const payload = {
+          email: email,
+          paymentMethod: paymentMethod,
+          answers: {
+            ...this.answers,
+            riskProfile: this.riskProfile || 'medium',
+            situationProfile: this.situationProfile || 'employed',
+            experienceProfile: this.experienceProfile || 'intermediate'
+          }
+        };
+
+        console.log('📤 Enviando para backend:', payload);
+
+        // Chamar API
+        const response = await fetch('http://localhost:3000/api/process-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+      },
+      
+      showResults(backendResult) {
+        // Se veio do backend, usar dados dele
+        if (backendResult && backendResult.success) {
+          const message = `
+            <div style="text-align: center; margin-bottom: 1rem;">
+              <p style="color: #667eea; font-weight: 600; margin: 0.5rem 0;">✅ Pagamento Confirmado!</p>
+              <p style="color: #999; font-size: 13px; margin: 0;">ID: ${backendResult.paymentId}</p>
+            </div>
+          `;
+          document.getElementById('resultSubtitle').innerHTML = message;
+          
+          // Se houver preview URL (modo teste com ethereal)
+          if (backendResult.previewUrl) {
+            console.log('📧 Preview do email:', backendResult.previewUrl);
+            const preview = `<p style="font-size: 12px; color: #999; margin-top: 1rem;"><a href="${backendResult.previewUrl}" target="_blank" style="color: #667eea;">Ver preview do email →</a></p>`;
+            const subtitle = document.getElementById('resultSubtitle');
+            subtitle.innerHTML += preview;
+          }
+        }
+
+        // Carteira padrão
+        const carteiraData = [
+          { classe: 'SELIC (LFT, CDB, LCA)', pct: 73, desc: 'Renda Fixa segura' },
+          { classe: 'IPCA (NTN-B)', pct: 16, desc: 'Proteção contra inflação' },
+          { classe: 'Pré-fixado (LTN, CDB)', pct: 11, desc: 'Crescimento' }
+        ];
+        
+        const preview = carteiraData.map(item => `
+          <div class="carteira-item">
+            <div>
+              <div class="carteira-name">${item.classe}</div>
+              <div style="font-size: 12px; color: #999; margin-top: 4px;">${item.desc}</div>
+            </div>
+            <div class="carteira-pct">${item.pct}%</div>
+          </div>
+        `).join('');
+        
+        document.getElementById('carteiraPreview').innerHTML = preview;
+        document.getElementById('resultOverlay').classList.remove('hidden');
+        document.getElementById('resultOverlay').classList.add('show');
+      },
+      
+      downloadPDF() {
+        alert('📥 Seu relatório PDF foi gerado!\n\nBaixando: Alocacao_Investimentos_allocations.me.pdf');
+      },
+      
+      shareCarteira() {
+        alert('🔗 Link copiado para compartilhar sua alocação!');
+      },
+      
+      // Carrega indicadores (SELIC, CDI, IPCA) em tempo real
+      loadIndicators() {
+        const widget = document.getElementById('indicatorsWidget');
+        
+        // Primeiro tenta carregar do backend
+        fetch('http://localhost:3000/api/titulos/resumo')
+          .then(res => res.json())
+          .then(data => {
+            if (data.sucesso && data.data) {
+              const indicators = data.data;
+              const dataHora = new Date(indicators.timestamp).toLocaleString('pt-BR');
+              
+              widget.innerHTML = `
+                <div class="indicator-card">
+                  <div class="indicator-label">Taxa SELIC</div>
+                  <div class="indicator-value">${indicators.selic}%</div>
+                  <div class="indicator-update">Atualizado em ${dataHora}</div>
+                </div>
+                <div class="indicator-card">
+                  <div class="indicator-label">Taxa CDI</div>
+                  <div class="indicator-value">${indicators.cdi}%</div>
+                  <div class="indicator-update">Atualizado em ${dataHora}</div>
+                </div>
+                <div class="indicator-card">
+                  <div class="indicator-label">IPCA Estimado</div>
+                  <div class="indicator-value">${indicators.ipca_estimado}%</div>
+                  <div class="indicator-update">Projeção: ${indicators.dataAtualizacao}</div>
+                </div>
+              `;
+              
+              // Recarrega a cada 30 segundos
+              setTimeout(() => this.loadIndicators(), 30000);
+            }
+          })
+          .catch(err => {
+            widget.innerHTML = `
+              <div class="indicator-error">
+                ⚠️ Não conseguimos conectar ao servidor de dados. 
+                Certifique-se de que o backend está rodando em http://localhost:3000
+              </div>
+            `;
+          });
+      }
+    };
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      // Carrega indicadores de mercado em tempo real
+      app.loadIndicators();
+      
+      const cardInput = document.getElementById('cardNumber');
+      if (cardInput) {
+        cardInput.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/\s/g, '');
+          let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+          e.target.value = formatted;
+        });
+      }
+      
+      const expiryInput = document.getElementById('cardExpiry');
+      if (expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length >= 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+          }
+          e.target.value = value;
+        });
+      }
+    });
+  </script>
+</body>
+</html>

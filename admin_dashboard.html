@@ -520,16 +520,34 @@
     }
     
     function salvarJSON() {
-      const json = document.getElementById('jsonCompleto').value;
-      
-      try {
-        const parsed = JSON.parse(json);
-        showStatus('statusJSON', '💾 JSON salvo com sucesso! (dados salvos localmente)', 'success');
-        console.log('Dados a salvar:', parsed);
-      } catch (err) {
-        showStatus('statusJSON', '❌ Erro: JSON inválido', 'error');
+  const json = document.getElementById('jsonCompleto').value;
+  
+  try {
+    const parsed = JSON.parse(json);
+    
+    // Envia para backend
+    fetch(`${API_BASE}/titulos`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(parsed)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.sucesso) {
+        showStatus('statusJSON', '✅ Dados salvos no MongoDB com sucesso!', 'success');
+      } else {
+        showStatus('statusJSON', '❌ Erro: ' + data.error, 'error');
       }
-    }
+    })
+    .catch(err => {
+      showStatus('statusJSON', '❌ Erro ao salvar: ' + err.message, 'error');
+    });
+  } catch (err) {
+    showStatus('statusJSON', '❌ Erro: JSON inválido', 'error');
+  }
+}
     
     // Carrega indicadores ao abrir
     window.addEventListener('load', () => {

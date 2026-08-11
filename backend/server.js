@@ -1,3 +1,4 @@
+const { conectarMongoDB, obterDB } = require('./db.js');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -10,10 +11,18 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// =====================
-// CARREGAR DADOS DE TÍTULOS
-// =====================
 let dadosMercado = null;
+
+// Inicializar MongoDB e depois carregar dados
+async function inicializar() {
+  await conectarMongoDB();
+  await carregarDadosDeMongoDB();
+}
+
+inicializar().catch(err => {
+  console.error('❌ Erro na inicialização:', err);
+  process.exit(1);
+});
 
 function carregarDadosMercado() {
   try {

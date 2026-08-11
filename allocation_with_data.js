@@ -10,7 +10,7 @@ generateAllocationWithData() {
   const self = this;
   
   // Busca todos os dados de títulos
-  fetch('http://localhost:3000/api/titulos')
+  fetch('http://allocations-me.onrender.com/api/titulos')
     .then(res => res.json())
     .then(data => {
       if (!data.sucesso) throw new Error('Dados não carregados');

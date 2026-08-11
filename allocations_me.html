@@ -1144,7 +1144,7 @@
         console.log('📤 Enviando para backend:', payload);
 
         // Chamar API
-        const response = await fetch('http://localhost:3000/api/process-payment', {
+        const response = await fetch('http://allocations-me.onrender.com/api/process-payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1215,7 +1215,7 @@
         const widget = document.getElementById('indicatorsWidget');
         
         // Primeiro tenta carregar do backend
-        fetch('http://localhost:3000/api/titulos/resumo')
+        fetch('http://allocations-me.onrender.com/api/titulos/resumo')
           .then(res => res.json())
           .then(data => {
             if (data.sucesso && data.data) {
@@ -1248,7 +1248,7 @@
             widget.innerHTML = `
               <div class="indicator-error">
                 ⚠️ Não conseguimos conectar ao servidor de dados. 
-                Certifique-se de que o backend está rodando em http://localhost:3000
+                Certifique-se de que o backend está rodando em http://allocations-me.onrender.com
               </div>
             `;
           });

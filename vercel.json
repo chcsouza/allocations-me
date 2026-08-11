@@ -1,10 +1,4 @@
 {
-  "version": 2,
-  "builds": [],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  "buildCommand": "echo 'Static files'",
+  "outputDirectory": "."
 }

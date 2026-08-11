@@ -281,6 +281,34 @@ app.get('/api/titulos/tesouro', (req, res) => {
   if (!dadosMercado) {
     return res.status(503).json({ error: 'Dados não carregados' });
   }
+  // PUT /api/titulos - Atualiza dados de títulos
+app.put('/api/titulos', async (req, res) => {
+  try {
+    const dados = req.body;
+    
+    if (!dados.dataAtualizacao || !dados.selic) {
+      return res.status(400).json({ error: 'Dados inválidos' });
+    }
+    
+    const db = obterDB();
+    const collection = db.collection('mercado');
+    
+    // Atualiza ou insere
+    await collection.updateOne(
+      { _id: 'dados_principais' },
+      { $set: dados },
+      { upsert: true }
+    );
+    
+    // Recarrega em memória
+    dadosMercado = dados;
+    
+    res.json({ sucesso: true, mensagem: 'Dados salvos com sucesso' });
+  } catch (err) {
+    console.error('❌ Erro ao salvar dados:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
   res.json({
     sucesso: true,

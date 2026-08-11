@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb');
 
 const MONGODB_URI = 'mongodb+srv://souzauk_db_user:2cu6FO9uep6qpixV@allocations.th9auxq.mongodb.net/allocations?retryWrites=true&w=majority&appName=allocations';
-
 let client;
 let db;
 

@@ -12,6 +12,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 let dadosMercado = null;
+// Carregar dados do MongoDB
+async function carregarDadosDeMongoDB() {
+  try {
+    const db = obterDB();
+    const collection = db.collection('mercado');
+    
+    const dados = await collection.findOne({ _id: 'dados_principais' });
+    
+    if (dados) {
+      dadosMercado = dados;
+      console.log('✅ Dados carregados do MongoDB');
+      return true;
+    } else {
+      console.warn('⚠️  Nenhum dado no MongoDB. Usando padrão.');
+      // Criar dados padrão
+      dadosMercado = {
+        _id: 'dados_principais',
+        dataAtualizacao: new Date().toLocaleDateString('pt-BR'),
+        selic: 14.00,
+        cdi: 13.95,
+        ipca_estimado: 5.00
+      };
+      await collection.insertOne(dadosMercado);
+      return true;
+    }
+  } catch (err) {
+    console.error('❌ Erro ao carregar dados do MongoDB:', err.message);
+    return false;
+  }
+}
 
 // Inicializar MongoDB e depois carregar dados
 async function inicializar() {

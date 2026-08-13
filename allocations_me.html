@@ -510,83 +510,7 @@
       font-size: 12px;
     }
     
-    /* Indicators Widget */
-    .indicators-section {
-      padding: 4rem 2rem;
-      background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-      border-top: 1px solid #e0e0e0;
-    }
     
-    .indicators-container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    
-    .indicators-header {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      color: #1a1a1a;
-      text-align: center;
-    }
-    
-    .indicators-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    .indicator-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s;
-      border-left: 4px solid #667eea;
-    }
-    
-    .indicator-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-    }
-    
-    .indicator-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #999;
-      margin-bottom: 0.5rem;
-      letter-spacing: 1px;
-    }
-    
-    .indicator-value {
-      font-size: 28px;
-      font-weight: 800;
-      color: #667eea;
-      margin-bottom: 0.5rem;
-    }
-    
-    .indicator-update {
-      font-size: 10px;
-      color: #bbb;
-    }
-    
-    .indicator-loading {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: #999;
-      font-size: 14px;
-    }
-    
-    .indicator-error {
-      background: #fee;
-      color: #c33;
-      padding: 1.5rem;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 14px;
-    }
   </style>
 </head>
 <body>
@@ -1210,9 +1134,7 @@
         alert('🔗 Link copiado para compartilhar sua alocação!');
       },
       
-      // Carrega indicadores (SELIC, CDI, IPCA) em tempo real
-      loadIndicators() {
-        const widget = document.getElementById('indicatorsWidget');
+    
         
         // Primeiro tenta carregar do backend
         fetch('http://allocations-me.onrender.com/api/titulos/resumo')
@@ -1256,8 +1178,7 @@
     };
     
     document.addEventListener('DOMContentLoaded', () => {
-      // Carrega indicadores de mercado em tempo real
-      app.loadIndicators();
+    
       
       const cardInput = document.getElementById('cardNumber');
       if (cardInput) {
